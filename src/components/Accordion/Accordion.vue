@@ -23,3 +23,12 @@
     }
   }
 </script>
+
+<style lang="less">
+  @import "../../utils/css/_colors-vars.less";
+  @import "../../utils/css/_mixins.less";
+
+  .body {
+    font-size: 12px;
+  }
+</style>
