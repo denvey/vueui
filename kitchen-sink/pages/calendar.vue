@@ -2,7 +2,7 @@
   <div class="page">
     <Calendar
       :aroud="calendar.aroud"
-      :onClick="setCurrentDate"
+      :onChange="setCurrentDate"
       :nums="calendar.nums"
       :rangePicker="true"
       :select-date="currentDate"/>

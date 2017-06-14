@@ -15,20 +15,20 @@
         <div class="calendar-body">
           <ul class="days">
             <li v-for="day in date.days">
-              <div v-if="day.getMonth()+1 != date.m">
+              <div v-if="day.date.getMonth() + 1 != date.m">
                 <span></span>
               </div>
-              <div v-else-if="isToday(day)" @click="onDayClick(day)" :class="{today: isCurrentDay(day)}">
+              <div v-else-if="isToday(day.date)" @click="onSelect(day.date)" :class="{today: day.selected}">
                 <span>{{ '今天' }}</span>
-                <i>{{getNum(day)}}</i>
+                <i>{{getNum(day.date)}}</i>
               </div>
-              <div v-else :class="{today: isCurrentDay(day)}">
-                <template v-if="day<new Date()">
-                  <span class="disabled">{{ day.getDate() }}</span>
+              <div v-else :class="{today: day.selected}">
+                <template v-if="day.date < new Date()">
+                  <span class="disabled">{{ day.date.getDate() }}</span>
                 </template>
                 <template v-else>
-                  <span @click="onDayClick(day)">{{ day.getDate() }}</span>
-                  <i class="nums">{{getNum(day)}}</i>
+                  <span @click="onSelect(day.date)">{{ day.date.getDate() }}</span>
+                  <i class="nums">{{getNum(day.date)}}</i>
                 </template>
               </div>
             </li>
@@ -44,114 +44,181 @@
     form: '',
     to: ''
   };
-export default {
-  data () {
-    return {
-      currentDate: {
-        currentDay: null,
-        currentMonth: null,
-        currentYear: null,
-        currentWeek: null
-      },
-      dateArr: []
-    }
-  },
-  props: ['aroud', 'onClick', 'nums', 'selectDate', 'rangePicker'],
-  computed: {},
-  created: function () {
-    for (let x = 0; x < this.aroud; x++) {
-      let days = this.calendarInit(this.currentDate.currentYear, this.currentDate.currentMonth)
-      let timeObj = {
-        y: this.currentDate.currentYear,
-        m: this.currentDate.currentMonth,
-        days: days
+  export default {
+    data () {
+      return {
+        currentDate: {
+          currentDay: null,
+          currentMonth: null,
+          currentYear: null,
+          currentWeek: null
+        },
+        dateArr: []
       }
-      this.dateArr.push(timeObj)
-    }
-  },
-  methods: {
-    onDayClick: function (day) {
-      if (this.rangePicker) {
-        if (!!selectDate.form) {
-          selectDate.to = day;
-          this.onClick(selectDate);
-          selectDate = {
-            form: '',
-            to: ''
-          };
+    },
+    props: ['aroud', 'onChange', 'nums', 'selectDate', 'rangePicker'],
+    computed: {},
+    created: function () {
+      for (let x = 0; x < this.aroud; x++) {
+        let days = this.calendarInit(this.currentDate.currentYear, this.currentDate.currentMonth)
+        let timeObj = {
+          y: this.currentDate.currentYear,
+          m: this.currentDate.currentMonth,
+          days: days
+        }
+        this.dateArr.push(timeObj)
+      }
+      console.log(this.dateArr);
+    },
+    methods: {
+      onSelect: function (day) {
+        if (this.rangePicker) {
+          if (!!selectDate.form) {
+            selectDate.to = day;
+            console.log(selectDate);
+            this.onChange(selectDate);
+            selectDate = {
+              form: '',
+              to: ''
+            };
+          } else {
+            selectDate.form = day;
+            console.log(selectDate);
+          }
+          this.rangSelect(selectDate);
         } else {
-          selectDate.form = day;
+          this.onChange(day);
         }
-      } else {
-        this.onClick(day)
-      }
-    },
-    isCurrentDay: function (day) {
-      let d = this.selectDate
-      if (d != null) {
-        return day.getFullYear() == d.getFullYear() && day.getMonth() == d.getMonth() && day.getDate() == d.getDate() ? true : false
-      } else {
-        return day.getFullYear() == new Date().getFullYear() && day.getMonth() == new Date().getMonth() && day.getDate() == new Date().getDate() ? true : false
-      }
-    },
-    getNum: function (date) {
-      var lastDay = this.nums.length && this.nums[this.nums.length - 1].reTravelDate
-      var day = this.formatDate(date.getFullYear(), date.getMonth() + 1, date.getDate())
-      if (day > lastDay) {
-        return ''
-      }
-      for (var x in this.nums) {
-        if (this.nums[x].reTravelDate == day) {
-          return '剩' + this.nums[x].availableAmount + '人'
+      },
+      rangSelect: function (params) {
+        const formY = this.dateFormat(params.form, 'yyyy');
+        const formM = this.dateFormat(params.form, 'M');
+        const formD = this.dateFormat(params.form, 'd');
+        const toY = this.dateFormat(params.to, 'yyyy');
+        const toM = this.dateFormat(params.to, 'yyyy');
+        const toD = this.dateFormat(params.to, 'yyyy');
+
+        for (let i = 0, iLen = this.dateArr.length; i < iLen; i ++) {
+          if (!!params.from && !!params.to) {
+            if (this.dateArr[i].y > formY && this.dateArr[i].y < toY
+              && this.dateArr[i].m > formM && this.dateArr[i].m < toM) {
+              for (let j = 0, jLen = this.dateArr[i].days.length; j < jLen; j++) {
+                if (this.dateArr[i].days[j].date > params.form && this.dateArr[i].days[j].date < params.to) {
+                  this.dateArr[i].days[j].selected = true;
+                }
+              }
+            }
+          } else {
+            if (this.dateArr[i].y == formY && this.dateArr[i].m == formM) {
+              for (let j = 0, jLen = this.dateArr[i].days.length; j < jLen; j++) {
+                if (this.dateArr[i].days[j].date == params.form) {
+                  this.dateArr[i].days[j].selected = true;
+                }
+              }
+            }
+          }
         }
-      }
-    },
-    isToday: function (day) {
-      return day.getFullYear() == new Date().getFullYear() && day.getMonth() == new Date().getMonth() && day.getDate() == new Date().getDate() ? true : false;
-    },
-    getDay: function (date) {
-      this.currentDate.currentDay = date.getDate();
-      this.currentDate.currentYear = date.getFullYear();
-      this.currentDate.currentMonth = date.getMonth() + 1;
-      this.currentDate.currentWeek = date.getDay() + 1;
-      if (this.currentDate.currentWeek == 0) {
-        this.currentDate.currentWeek = 7;
-      }
-    },
-    formatDate: function (year, month, day) {
-      var y = year;
-      var m = month;
-      if (m < 10) m = "0" + m;
-      var d = day;
-      if (d < 10) d = "0" + d;
-      return y + "-" + m + "-" + d
-    },
-    calendarInit: function (year, month) {
-      var date, d;
-      var days = [];
-      if (year == null || month == null) {
-        var _date = new Date();
-        d = new Date(_date.getFullYear(), _date.getMonth() - 1, 1);
-      } else {
-        d = new Date(year, month - 1, 1);
-      }
-      d.setDate(42);
-      date = new Date(d.getFullYear(), d.getMonth(), 1);
-      this.getDay(date);
-      for (var i = this.currentDate.currentWeek - 1; i >= 0; i--) {
-        var d = new Date(this.currentDate.currentYear, this.currentDate.currentMonth - 1, this.currentDate.currentDay);
-        d.setDate(d.getDate() - i);
-        days.push(d);
-      }
-      for (var i = 1; i <= 42 - this.currentDate.currentWeek; i++) {
-        var d = new Date(this.currentDate.currentYear, this.currentDate.currentMonth - 1, this.currentDate.currentDay);
-        d.setDate(d.getDate() + i);
-        days.push(d);
-      }
-      return days;
-    },
+        console.log(this.dateArr);
+      },
+      isCurrentDay: function (day) {
+        let d = null
+        if (d != null) {
+          return day.getFullYear() == d.getFullYear() && day.getMonth() == d.getMonth() && day.getDate() == d.getDate() ? true : false
+        } else {
+          return day.getFullYear() == new Date().getFullYear() && day.getMonth() == new Date().getMonth() && day.getDate() == new Date().getDate() ? true : false
+        }
+      },
+      getNum: function (date) {
+        var lastDay = this.nums.length && this.nums[this.nums.length - 1].reTravelDate
+        var day = this.formatDate(date.getFullYear(), date.getMonth() + 1, date.getDate())
+        if (day > lastDay) {
+          return ''
+        }
+        for (var x in this.nums) {
+          if (this.nums[x].reTravelDate == day) {
+            return '剩' + this.nums[x].availableAmount + '人'
+          }
+        }
+      },
+      isToday: function (day) {
+        return day.getFullYear() == new Date().getFullYear() && day.getMonth() == new Date().getMonth() && day.getDate() == new Date().getDate() ? true : false;
+      },
+      getDay: function (date) {
+        this.currentDate.currentDay = date.getDate();
+        this.currentDate.currentYear = date.getFullYear();
+        this.currentDate.currentMonth = date.getMonth() + 1;
+        this.currentDate.currentWeek = date.getDay() + 1;
+        if (this.currentDate.currentWeek == 0) {
+          this.currentDate.currentWeek = 7;
+        }
+      },
+      formatDate: function (year, month, day) {
+        var y = year;
+        var m = month;
+        if (m < 10) m = "0" + m;
+        var d = day;
+        if (d < 10) d = "0" + d;
+        return y + "-" + m + "-" + d
+      },
+      dateFormat: function (date, format) {
+        if (typeof date === 'string') {
+          date = new Date(date.replace(/-/g, "/"));
+        }
+        let map = {
+          "M": date.getMonth() + 1, //月份
+          "d": date.getDate(), //日
+          "h": date.getHours(), //小时
+          "m": date.getMinutes(), //分
+          "s": date.getSeconds(), //秒
+          "q": Math.floor((date.getMonth() + 3) / 3), //季度
+          "S": date.getMilliseconds() //毫秒
+        };
+        format = format.replace(/([yMdhmsqS])+/g, function (all, t) {
+          let v = map[t];
+          if (v !== undefined) {
+            if (all.length > 1) {
+              v = '0' + v;
+              v = v.substr(v.length - 2);
+            }
+            return v;
+          }
+          else if (t === 'y') {
+            return (date.getFullYear() + '').substr(4 - all.length);
+          }
+          return all;
+        });
+        return format;
+      },
+      calendarInit: function (year, month) {
+        var date, d;
+        var days = [];
+        if (year == null || month == null) {
+          var _date = new Date();
+          d = new Date(_date.getFullYear(), _date.getMonth() - 1, 1);
+        } else {
+          d = new Date(year, month - 1, 1);
+        }
+        d.setDate(42);
+        date = new Date(d.getFullYear(), d.getMonth(), 1);
+        this.getDay(date);
+        for (var i = this.currentDate.currentWeek - 1; i >= 0; i--) {
+          var d = new Date(this.currentDate.currentYear, this.currentDate.currentMonth - 1, this.currentDate.currentDay);
+          d.setDate(d.getDate() - i);
+          days.push({
+            date: d
+          });
+        }
+        for (var i = 1; i <= 42 - this.currentDate.currentWeek; i++) {
+          var d = new Date(this.currentDate.currentYear, this.currentDate.currentMonth - 1, this.currentDate.currentDay);
+          d.setDate(d.getDate() + i);
+          days.push({
+            date: d
+          });
+        }
+        return days;
+      },
+    }
   }
-}
 </script>
 
 <style lang="less">
@@ -164,6 +231,7 @@ export default {
       list-style: none;
     }
   }
+
   .today {
     /*px*/
     height: 86px;
