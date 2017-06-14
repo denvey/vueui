@@ -40,10 +40,6 @@
 </template>
 
 <script>
-  let selectDate = {
-    form: '',
-    to: ''
-  };
   export default {
     data () {
       return {
@@ -53,10 +49,14 @@
           currentYear: null,
           currentWeek: null
         },
-        dateArr: []
+        dateArr: [],
+        selectDate: {
+          form: '',
+          to: ''
+        }
       }
     },
-    props: ['aroud', 'onChange', 'nums', 'selectDate', 'rangePicker'],
+    props: ['aroud', 'onChange', 'nums', 'defaultDate', 'rangePicker'],
     computed: {},
     created: function () {
       for (let x = 0; x < this.aroud; x++) {
@@ -68,24 +68,23 @@
         }
         this.dateArr.push(timeObj)
       }
-      console.log(this.dateArr);
+    },
+    mounted: function () {
+      this.rangSelect(this.defaultDate);
     },
     methods: {
       onSelect: function (day) {
         if (this.rangePicker) {
-          if (!!selectDate.form) {
-            selectDate.to = day;
-            console.log(selectDate);
-            this.onChange(selectDate);
-            selectDate = {
-              form: '',
-              to: ''
-            };
+          if (!!this.selectDate.form && !!this.selectDate.to)  {
+            this.selectDate.form = day;
+            this.selectDate.to = '';
+          }else if (!!this.selectDate.form) {
+            this.selectDate.to = day;
+            this.onChange(this.selectDate);
           } else {
-            selectDate.form = day;
-            console.log(selectDate);
+            this.selectDate.form = day;
           }
-          this.rangSelect(selectDate);
+          this.rangSelect(this.selectDate);
         } else {
           this.onChange(day);
         }
@@ -93,32 +92,29 @@
       rangSelect: function (params) {
         const formY = this.dateFormat(params.form, 'yyyy');
         const formM = this.dateFormat(params.form, 'M');
-        const formD = this.dateFormat(params.form, 'd');
         const toY = this.dateFormat(params.to, 'yyyy');
         const toM = this.dateFormat(params.to, 'yyyy');
-        const toD = this.dateFormat(params.to, 'yyyy');
 
-        for (let i = 0, iLen = this.dateArr.length; i < iLen; i ++) {
-          if (!!params.from && !!params.to) {
-            if (this.dateArr[i].y > formY && this.dateArr[i].y < toY
-              && this.dateArr[i].m > formM && this.dateArr[i].m < toM) {
-              for (let j = 0, jLen = this.dateArr[i].days.length; j < jLen; j++) {
-                if (this.dateArr[i].days[j].date > params.form && this.dateArr[i].days[j].date < params.to) {
-                  this.dateArr[i].days[j].selected = true;
+        for (let i = 0, iLen = this.dateArr.length; i < iLen; i++) {
+          for (let j = 0, jLen = this.dateArr[i].days.length; j < jLen; j++) {
+            if (this.dateArr[i].days[j].selected) {
+              this.dateArr[i].days[j].selected = false;
+            }
+            if (!!params.form && !!params.to) {
+              if (this.dateArr[i].y >= formY && this.dateArr[i].y <= toY && this.dateArr[i].m >= formM && this.dateArr[i].m <= toM) {
+                if (this.dateArr[i].days[j].date >= params.form && this.dateArr[i].days[j].date <= params.to) {
+                  this.$set(this.dateArr[i].days[j], 'selected', true)
                 }
               }
-            }
-          } else {
-            if (this.dateArr[i].y == formY && this.dateArr[i].m == formM) {
-              for (let j = 0, jLen = this.dateArr[i].days.length; j < jLen; j++) {
+            } else {
+              if (this.dateArr[i].y == formY && this.dateArr[i].m == formM) {
                 if (this.dateArr[i].days[j].date == params.form) {
-                  this.dateArr[i].days[j].selected = true;
+                  this.$set(this.dateArr[i].days[j], 'selected', true)
                 }
               }
             }
           }
         }
-        console.log(this.dateArr);
       },
       isCurrentDay: function (day) {
         let d = null

@@ -5,7 +5,7 @@
       :onChange="setCurrentDate"
       :nums="calendar.nums"
       :rangePicker="true"
-      :select-date="currentDate"/>
+      :defaultDate="defaultDate"/>
   </div>
 </template>
 
@@ -16,7 +16,7 @@
       return {
         calendar: {
           open: true,
-          aroud: 12, //12个月
+          aroud: 6, //12个月
           nums: [{
             "reTravelDate": "2016-12-27",
             "availableAmount": 12
@@ -34,7 +34,10 @@
             "availableAmount": 1
           }]
         },
-        currentDate: null,
+        defaultDate: {
+            form: new Date("2017-06-29"),
+            to: new Date("2017-07-01")
+        },
       }
     },
     components: {
