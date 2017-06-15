@@ -46,7 +46,8 @@
     methods: {
       setCurrentDate(d) {
         this.currentDate = d;
-        console.log(d);
+        console.log(d.form);
+        console.log(d.to);
         this.closeCalendar();
       },
       closeCalendar() {
@@ -55,3 +56,4 @@
     }
   }
 </script>
+

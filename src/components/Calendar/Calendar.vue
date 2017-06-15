@@ -1,28 +1,30 @@
 <template>
   <div class="vueui-calendar">
     <ul class="week">
-      <li style="color: #CCCCCC;">日</li>
+      <li style="color: #ff6633;">日</li>
       <li>一</li>
       <li>二</li>
       <li>三</li>
       <li>四</li>
       <li>五</li>
-      <li>六</li>
+      <li style="color: #ff6633;">六</li>
     </ul>
     <div class="calendar">
       <div class="calendar-item" v-for="date in dateArr">
         <div class="calendar-header"><span>{{date.y}}年{{date.m}}月</span></div>
         <div class="calendar-body">
           <ul class="days">
-            <li v-for="day in date.days">
-              <div v-if="day.date.getMonth() + 1 != date.m">
+            <template v-for="day in date.days">
+              <li  v-if="day.date.getMonth() + 1 < date.m">
                 <span></span>
-              </div>
-              <div v-else-if="isToday(day.date)" @click="onSelect(day.date)" :class="{today: day.selected}">
+              </li>
+              <template v-else-if="day.date.getMonth() + 1 > date.m">
+              </template>
+              <li v-else-if="isToday(day.date)" @click="onSelect(day.date)" :class="{today: day.selected}">
                 <span>{{ '今天' }}</span>
                 <i>{{getNum(day.date)}}</i>
-              </div>
-              <div v-else :class="{today: day.selected}">
+              </li>
+              <li v-else :class="{today: day.selected}">
                 <template v-if="day.date < new Date()">
                   <span class="disabled">{{ day.date.getDate() }}</span>
                 </template>
@@ -30,8 +32,8 @@
                   <span @click="onSelect(day.date)">{{ day.date.getDate() }}</span>
                   <i class="nums">{{getNum(day.date)}}</i>
                 </template>
-              </div>
-            </li>
+              </li>
+            </template>
           </ul>
         </div>
       </div>
@@ -70,6 +72,7 @@
       }
     },
     mounted: function () {
+      console.log(this.dateArr);
       this.rangSelect(this.defaultDate);
     },
     methods: {
@@ -79,8 +82,12 @@
             this.selectDate.form = day;
             this.selectDate.to = '';
           }else if (!!this.selectDate.form) {
-            this.selectDate.to = day;
-            this.onChange(this.selectDate);
+            if (day < this.selectDate.form) {
+              this.selectDate.form = day;
+            } else {
+              this.selectDate.to = day;
+              this.onChange(this.selectDate);
+            }
           } else {
             this.selectDate.form = day;
           }
@@ -219,6 +226,7 @@
 
 <style lang="less">
   .vueui-calendar {
+    font-size: 12px;
     ul {
       margin: 0;
       padding: 0;
@@ -228,13 +236,7 @@
     }
   }
 
-  .today {
-    /*px*/
-    height: 86px;
-    color: #FFFFFF;
-    background: #37B7FA;
-    border: 1px solid #FFFFFF;
-  }
+
 
   .calendar-list {
     background-color: #fff;
@@ -242,6 +244,7 @@
 
   .calendar {
     padding-top: 0.27rem;
+    background: #efeeec;
   }
 
   .week {
@@ -257,64 +260,70 @@
       height: 40px;
       line-height: 40px;
       vertical-align: middle;
-      font-size: 25.7px;
+      font-size: 15px;
       /*px*/
-      font-weight: medium;
+      font-weight: bold;
     }
   }
 
   .calendar-item {
+    margin-bottom: 10px;
+    background: #ffffff;
     &:nth-of-type(1) {
       margin-top: 40px;
     }
-    padding-bottom: 0.1rem;
     .calendar-header {
       text-align: center;
-      font-size: 28px;
+      font-size: 15px;
       /*px*/
       color: #333333;
-      font-weight: medium;
-      padding: 20px 0 10px 0;
+      font-weight: 300;
+      padding: 10px 0;
     }
     .calendar-body {
       ul {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-around;
+        /*justify-content: space-around;*/
         li {
           text-align: center;
-          height: 86px;
+          height: 49px;
           vertical-align: middle;
           border: none;
-          font-weight: medium;
-          color: #797979;
+          font-weight: 300;
+          color: #333;
           width: 14.28%;
           background-color: #fff;
           position: relative;
-          div {
+          border-bottom: 1px solid #e2e2e2;
+
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          &.today {
             /*px*/
-            height: 86px;
+            color: #FFFFFF;
+            background: #ff6633;
+
+          }
+          &.today:first-child {
+            border-radius: 3px 0 0 3px;
+          }
             span {
-              display: flex;
-              justify-content: center;
-              align-items: flex-end;
               font-size: 15px;
               /*px*/
-              height: 46px;
-              line-height: 39.63px;
             }
             i {
               font-size: 18px;
               /*px*/
               display: block;
-              height: 40px;
-              line-height: 25px;
             }
             .nums {
               color: #37B7FA;
             }
-          }
         }
+
         span[class=disabled] {
           color: #CCCCCC;
         }
