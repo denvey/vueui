@@ -1,7 +1,10 @@
 <template>
   <div class="page">
     <NavBar leftContent="hello">
-      <div slot="left">返回</div>
+      <template slot="left" @click="test">
+        <i class="icon icon-back"></i>
+        <span>返回</span>
+      </template>
       <span>你好</span>
       title
       <div slot="right" @click="test">right</div>

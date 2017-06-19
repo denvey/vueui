@@ -2,11 +2,12 @@
   <div class="navbar">
     <div class="navbar-inner navbar-on-center">
       <div class="left sliding" >
-        <a v-if="leftContent" @click="onClickLeft" class="back link">
-          <i class="icon icon-back"></i>
-          <span>{{leftContent}}</span>
+        <a @click="onClickLeft" class="back link">
+          <slot name="left">
+            <i class="icon icon-back"></i>
+            <span>{{leftContent}}</span>
+          </slot>
         </a>
-        <slot v-else name="left"></slot>
       </div>
       <div class="center sliding"><slot></slot></div>
       <div class="right">
@@ -25,6 +26,7 @@
     },
     methods: {
       onClickLeft: function () {
+        console.log(11);
         if (this.onLeftClick) {
           this.onLeftClick();
         }
