@@ -1,25 +1,21 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <View>
+      <router-view></router-view>
+    </View>
   </div>
 </template>
 
 <script>
+  import View from '@/components/view';
 export default {
-  name: 'app'
+  name: 'app',
+  components: {
+    View
+  }
 }
 </script>
 
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-  }
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+  @import "../src/styles/intro.less";
 </style>

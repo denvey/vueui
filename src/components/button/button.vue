@@ -16,8 +16,8 @@
 </script>
 
 <style lang="less">
-  @import "../../utils/css/_colors-vars.less";
-  @import "../../utils/css/_mixins.less";
+  @import "../../styles/_colors-vars.less";
+  @import "../../styles/_mixins.less";
 
   .button {
     border: 1px solid @themeColor;

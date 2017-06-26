@@ -25,8 +25,8 @@
 </script>
 
 <style lang="less">
-  @import "../../utils/css/_colors-vars.less";
-  @import "../../utils/css/_mixins.less";
+  @import "../../styles/_colors-vars.less";
+  @import "../../styles/_mixins.less";
 
   .body {
     font-size: 12px;
