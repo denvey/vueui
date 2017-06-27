@@ -16,12 +16,10 @@
 
 <script>
 import Button from '@/components/Button';
-import Accordion from '@/components/Accordion';
 import NavBar from '@/components/nav-bar';
 export default {
   components: {
     Button,
-    Accordion,
     NavBar
   },
   methods: {

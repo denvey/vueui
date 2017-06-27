@@ -1,9 +1,7 @@
 <template>
-  <div id="app">
-    <View>
+    <vui-view>
       <router-view></router-view>
-    </View>
-  </div>
+    </vui-view>
 </template>
 
 <script>
@@ -11,7 +9,7 @@
 export default {
   name: 'app',
   components: {
-    View
+    "vui-view": View
   }
 }
 </script>
