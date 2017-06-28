@@ -16,7 +16,9 @@
   import { Accordion, AccordionItem }  from '@/components/accordion';
   export default {
     data() {
-      return {}
+      return {
+
+      }
     },
     components: {
       Accordion,
