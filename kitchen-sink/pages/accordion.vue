@@ -1,7 +1,14 @@
 <template>
   <Accordion>
     <AccordionItem header="hello">
-      content
+      <p>content</p>
+      <p>content</p>
+      <p>content</p>
+      <p>content</p>
+      <p>content</p>
+      <p>content</p>
+      <p>content</p>
+      <p>content</p>
     </AccordionItem>
     <AccordionItem>
       <div slot="header">

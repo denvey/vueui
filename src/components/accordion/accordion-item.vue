@@ -3,8 +3,16 @@
     <div class="accordion-item-header" @click="clickShow">
       <slot name="header">{{header}}</slot>
     </div>
-    <transition name="fade">
-      <div v-show="show" class="accordion-item-content" :style="{height: getHeight()}">
+    <transition name="fade"
+                v-on:before-enter="beforeEnter"
+                v-on:enter="enter"
+                v-on:after-enter="afterActive"
+
+
+                v-on:leave="leave"
+                v-on:after-leave="afterLeave"
+                >
+      <div v-show="expanded" ref="accordion" class="accordion-item-content" :style="{height: height}">
         <slot></slot>
       </div>
     </transition>
@@ -18,16 +26,35 @@
     },
     data() {
       return {
-        show: false
+        expanded: false,
+        height: 0
       }
     },
     methods: {
       clickShow: function () {
 
-        this.show = !this.show;
+        this.expanded = !this.expanded;
+//        this.height = this.$refs.accordion.scrollHeight;
       },
-      getHeight: function () {
-        console.log(this);
+      beforeEnter: function (el) {
+        el.style.height = 0;
+      },
+      enter: function(el, done) {
+        el.style.height = el.scrollHeight + 'px';
+        done()
+      },
+      afterActive: function(el) {
+//        el.style.height = 'auto'
+      },
+      beforeLeave: function (el) {
+        el.style.height = el.scrollHeight + 'px';
+      },
+      leave: function(el, done) {
+        el.style.height = 0;
+        done()
+      },
+      afterLeave: function(el) {
+//        el.style.height = 0;
       }
     }
   }
