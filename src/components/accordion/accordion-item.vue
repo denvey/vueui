@@ -1,5 +1,5 @@
 <template>
-  <div class="accordion-item">
+  <div :class="['accordion-item',{expanded: expanded}]">
     <div class="accordion-item-header" @click="clickShow">
       <slot name="header">{{header}}</slot>
     </div>
@@ -12,7 +12,7 @@
                 v-on:leave="leave"
                 v-on:after-leave="afterLeave"
                 >
-      <div v-show="expanded" ref="accordion" class="accordion-item-content" :style="{height: height}">
+      <div v-show="expanded" ref="accordion" class="accordion-item-content">
         <slot></slot>
       </div>
     </transition>
@@ -34,7 +34,11 @@
       clickShow: function () {
 
         this.expanded = !this.expanded;
-//        this.height = this.$refs.accordion.scrollHeight;
+        /*if (this.expanded) {
+          this.height = this.$refs.accordion.scrollHeight;
+        } else {
+          this.height = 0;
+        }*/
       },
       beforeEnter: function (el) {
         el.style.height = 0;
