@@ -5,6 +5,7 @@ import Home from '../pages/home'
 import Accordion from '../pages/accordion'
 import Button from '../pages/buttons'
 import Calendar from '../pages/calendar'
+import Modal from '../pages/modal.vue'
 
 Vue.use(Router)
 
@@ -24,6 +25,11 @@ export default new Router({
       path: '/calendar',
       name: 'Calendar',
       component: Calendar
+    },
+    {
+      path: '/modal',
+      name: 'Modal',
+      component: Modal
     },
     {
       path: '/accordion',
