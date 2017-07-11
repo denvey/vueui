@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Button from '@/components/Button';
+import Button from '@/components/button';
 import NavBar from '@/components/nav-bar';
 export default {
   components: {

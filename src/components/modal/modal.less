@@ -21,14 +21,20 @@
 
 @toolbarSize: 44px;
 
+.modal-wrapper {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  .flexbox();
+  .justify-content(center);
+  .align-items(center)
+}
 .modal {
   width: 270px;
-  position: absolute;
   z-index: 13500;
-  left: 50%;
-  margin-left: -135px;
-  margin-top: 0;
-  top: 50%;
   text-align: center;
   border-radius: 13px;
   overflow: hidden;

@@ -1,16 +1,18 @@
 <template>
   <transition>
-    <div v-show="_active" class="modal modal-in" style="display: block; margin-top: -62px;">
-      <div class="modal-inner">
-        <div class="modal-title">
-          <slot name="title">{{title}}</slot>
+    <div v-show="_show" class="modal-wrapper">
+      <div class="modal modal-in">
+        <div class="modal-inner">
+          <div class="modal-title">
+            <slot name="title">{{title}}</slot>
+          </div>
+          <div class="modal-text">
+            <slot>{{text}}</slot>
+          </div>
         </div>
-        <div class="modal-text">
-          <slot>{{text}}</slot>
+        <div class="modal-buttons modal-buttons-1">
+          <span class="modal-button modal-button-bold">OK</span>
         </div>
-      </div>
-      <div class="modal-buttons modal-buttons-1">
-        <span class="modal-button modal-button-bold">OK</span>
       </div>
     </div>
   </transition>
@@ -18,10 +20,10 @@
 
 <script>
   export default {
-    props: {
-      active: {
+    /*props: {
+      show: {
         type: Boolean,
-        default: false
+        default: true
       },
       title: String,
       text: String,
@@ -31,11 +33,19 @@
         type: Array,
         default: []
       }
-    },
+    },*/
     data() {
       return {
-        _active: this.active
+        show: false,
+        title: '提示',
+        text: '',
+        afterText: '',
+        verticalButtons: false,
+        buttons: []
       }
+    },
+    mounted() {
+      console.log(this.show);
     },
     methods:  {
 
