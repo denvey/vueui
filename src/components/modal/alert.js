@@ -25,8 +25,8 @@ let Modal = (content, options = {}) => {
   return new Promise((resolve, reject)=>{
     instance.show = true;
   
-    instance.$data = {...instance.$data, ...globalConfig};
-    {...instance.$data, ...options.content};
+    Object.assign(instance.$data, globalConfig);
+    Object.assign(instance.$data, options.content);
     let success = instance.success;
     
     instance.success = () => {
