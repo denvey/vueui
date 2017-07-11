@@ -26,7 +26,7 @@ let Modal = (content, options = {}) => {
     instance.show = true;
   
     instance.$data = {...instance.$data, ...globalConfig};
-    instance.$data = {...instance.$data, ...options.content};
+    {...instance.$data, ...options.content};
     let success = instance.success;
     
     instance.success = () => {
