@@ -18,11 +18,12 @@
     },
     methods: {
       test(data) {
-        console.log(1);
         this.$alert({
           text: "Hello",
           title: "Reui",
           buttons: [{text: "Ok", bold: true}]
+        }).then((res) => {
+          console.log(res);
         });
       }
     }

@@ -28,6 +28,7 @@
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 9999;
   .flexbox();
   .justify-content(center);
   .align-items(center)
@@ -51,6 +52,7 @@
     //.transition(@modalDuration);
     .transform(translate3d(0,-50%,0) scale(1));
     opacity: 1;
+    display: block;
   }
   &.modal-out {
     opacity: 0;
@@ -59,6 +61,7 @@
     .transform(translate3d(0,-50%,0) scale(1));
   }
 }
+
 
 @-webkit-keyframes modalIn {
   0% {

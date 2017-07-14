@@ -28,7 +28,7 @@ let Modal = (content, options = {}) => {
     Object.assign(instance.$data, globalConfig);
     Object.assign(instance.$data, options.content);
     let success = instance.success;
-    
+    console.log(instance);
     instance.success = () => {
       success();
       resolve('ok');

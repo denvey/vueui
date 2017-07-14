@@ -1,7 +1,6 @@
 <template>
-  <transition>
-    <div v-show="_show" class="modal-wrapper">
-      <div class="modal modal-in">
+    <Overlay v-if="show" class="modal-wrapper">
+      <div :class="['modal', show ? 'modal-in' : 'modal-out']">
         <div class="modal-inner">
           <div class="modal-title">
             <slot name="title">{{title}}</slot>
@@ -11,14 +10,14 @@
           </div>
         </div>
         <div class="modal-buttons modal-buttons-1">
-          <span class="modal-button modal-button-bold">OK</span>
+          <span class="modal-button modal-button-bold" @click="success">OK</span>
         </div>
       </div>
-    </div>
-  </transition>
+    </Overlay>
 </template>
 
 <script>
+  import Overlay from '../overlay';
   export default {
     /*props: {
       show: {
@@ -47,8 +46,13 @@
     mounted() {
       console.log(this.show);
     },
+    components:  {
+      Overlay
+    },
     methods:  {
-
+      success () {
+        this.show = false;
+      }
     }
   }
 </script>
