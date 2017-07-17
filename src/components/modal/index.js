@@ -1,9 +1,11 @@
 /**
  * Created by denvey on 2017/7/10.
  */
-import Alert from './alert';
+import Modals from './modals';
+import Modal from './modal.vue';
 
 
 export {
-  Alert
+  Modals,
+  Modal
 }

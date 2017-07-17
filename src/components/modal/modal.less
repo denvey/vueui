@@ -21,6 +21,27 @@
 
 @toolbarSize: 44px;
 
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 13000;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.modal-enter{
+  opacity: 0;
+}
+.modal-enter-active, .modal-leave-active{
+  .transition(@modalDuration);
+}
+.modal-leave-active {
+  opacity: 0;
+}
+
+
 .modal-wrapper {
   position: fixed;
   width: 100%;
@@ -39,38 +60,26 @@
   text-align: center;
   border-radius: 13px;
   overflow: hidden;
-  opacity: 0;
   -webkit-transition-property: -webkit-transform, opacity;
   -moz-transition-property: -moz-transform, opacity;
   -ms-transition-property: -ms-transform, opacity;
   -o-transition-property: -o-transform, opacity;
   transition-property: transform, opacity;
   color:#000;
-  display: none;
-  &.modal-in {
-    .animation(modalIn @modalDuration);
-    //.transition(@modalDuration);
-    .transform(translate3d(0,-50%,0) scale(1));
-    opacity: 1;
-    display: block;
-  }
-  &.modal-out {
-    opacity: 0;
-    z-index: 13500-1;
-    .transition(@modalDuration);
-    .transform(translate3d(0,-50%,0) scale(1));
-  }
-}
+  .animation(modalIn @modalDuration);
+  .transition(@modalDuration);
+  .transform(translate3d(0,0,0) scale(1));
 
+}
 
 @-webkit-keyframes modalIn {
   0% {
     opacity: 0 !important;
-    .transform(translate3d(0,-50%,0) scale(1.185));
+    .transform(translate3d(0,0,0) scale(1.185));
   }
   100% {
     opacity: 1;
-    .transform(translate3d(0,-50%,0) scale(1));
+    .transform(translate3d(0,0,0) scale(1));
   }
 }
 

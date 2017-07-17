@@ -1,8 +1,8 @@
 <template>
   <transition>
-    <div class="">
-    <div class="overlay"></div>
-    <slot></slot>
+    <div>
+      <div class="overlay"></div>
+      <slot></slot>
     </div>
   </transition>
 </template>
@@ -14,3 +14,4 @@
 <style lang="less">
   @import "./overlay.less";
 </style>
+

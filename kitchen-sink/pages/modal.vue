@@ -1,30 +1,53 @@
 <template>
-  <div @click="test">alert</div>
+  <div>
+    <Button @click.native="demoAlert">Alert</Button>
+    <Button @click.native="demoConfirm">Confirm</Button>
+    <Button @click.native="demoPrompt">Prompt</Button>
+    <Button @click.native="demoModal">Modal</Button>
+    <Modal ref="modal" :visible="visible" @onClick="demoModal">你好 <input /></Modal>
+  </div>
 </template>
 
 <script>
   import Vue from 'vue';
-  import { Alert }  from '@/components/modal';
+  import { Modals, Modal }  from '@/components/modal';
   import Button from '@/components/button';
-  Vue.use(Alert);
+  Vue.use(Modals);
   export default {
     data() {
       return {
-
+        visible: false
       }
     },
     components: {
-      Button
+      Button,
+      Modal
     },
     methods: {
-      test(data) {
-        this.$alert({
-          text: "Hello",
-          title: "Reui",
-          buttons: [{text: "Ok", bold: true}]
-        }).then((res) => {
+      async demoAlert() {
+        await this.$alert('你好').then((res) => {
+          this.$alert('test1').then(() => {
+            this.$alert('test11');
+          });
+        });
+        console.log('alert');
+      },
+      async demoConfirm() {
+        await this.$confirm('你好').then((res) => {
           console.log(res);
         });
+        console.log('confirm');
+      },
+      async demoPrompt() {
+        await this.$prompt('你好').then((res) => {
+          console.log(res);
+        });
+        console.log('prompt');
+      },
+      demoModal(data) {
+        this.$refs.modal.open();
+//        this.visible = true;
+//        this.$alert();
       }
     }
   }

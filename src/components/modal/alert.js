@@ -36,9 +36,13 @@ let Modal = (content, options = {}) => {
   });
 };
 
+let Alert = Modal({
+
+});
+
 export default {
   install (Vue, options={}) {
     globalConfig = options;
-    Vue.prototype.$alert = Modal;
+    Vue.prototype.$modal = Modal;
   }
 };
