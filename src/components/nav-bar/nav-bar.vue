@@ -22,7 +22,7 @@
     props: {
       leftContent: String,
       rightContent: String,
-      onLeftClick: Function,
+      onLeftClick: Function
     },
     methods: {
       onClickLeft: function () {
