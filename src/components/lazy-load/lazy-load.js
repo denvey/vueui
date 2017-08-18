@@ -15,7 +15,8 @@ class LazyLoad {
       threshold: options.threshold || 0,
       webp: options.webp || '',
       status: ['loading', 'loaded', 'error'],
-      event: ['scroll', 'resize']
+      event: ['scroll', 'resize'],
+      selector: options.selector || []
     };
   }
   
@@ -29,6 +30,20 @@ class LazyLoad {
       visible = true
     }
     return visible
+  }
+  
+  on () {
+    this.options.event.forEach(function (eventType) {
+      this.options.container.addEventListener(eventType, this.render, false);
+    });
+  }
+  
+  off () {
+  
+  }
+  
+  refresh () {
+  
   }
   
   render () {
