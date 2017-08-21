@@ -6,6 +6,7 @@ import Accordion from '../pages/accordion'
 import Button from '../pages/buttons'
 import Calendar from '../pages/calendar'
 import Modal from '../pages/modal.vue'
+import LazyLoad from '../pages/lazy-load.vue'
 
 Vue.use(Router)
 
@@ -30,6 +31,11 @@ export default new Router({
       path: '/modal',
       name: 'Modal',
       component: Modal
+    },
+    {
+      path: '/lazyload',
+      name: 'LazyLoad',
+      component: LazyLoad
     },
     {
       path: '/accordion',
