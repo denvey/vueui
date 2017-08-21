@@ -10,7 +10,6 @@
       <div slot="right" @click="test">right</div>
     </NavBar>
     <Button class="active">你好</Button>
-    <Accordion>123</Accordion>
   </div>
 </template>
 
