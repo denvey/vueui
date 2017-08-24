@@ -1,3 +1,6 @@
+
+import 'intersection-observer';
+
 /**
  * lazy load
  */
@@ -11,7 +14,7 @@ export default class LazyLoad {
       container: options.container || window,
       threshold: options.threshold || 0,
       type: options.type,
-      className: options.className || '.lazy',
+      className: options.className || 'lazy',
       attr: options.attr || '',
       webp: options.webp || '',
       status: ['loading', 'loaded', 'error'],
@@ -28,7 +31,6 @@ export default class LazyLoad {
       }
     };
   
-    this.render();
     this.on();
   }
   
@@ -49,8 +51,18 @@ export default class LazyLoad {
   }
   
   on () {
+    this.io = new IntersectionObserver((selector) => {
+      selector.forEach((item) => {
+        console.log(item);
+        const intersectionRatio = item.intersectionRatio;
+        if(intersectionRatio > 0 && intersectionRatio <= 1) {
+          this.load(item.target);
+        }
+      })
+    });
+    this.render();
     this.options.event.forEach((eventType) => {
-      this.options.container.addEventListener(eventType, this.render, false);
+      this.options.container.addEventListener(eventType, this.render.bind(this), false);
     });
   }
   
@@ -62,10 +74,24 @@ export default class LazyLoad {
   
   }
   
+  webp () {
+    return new Promise(function(resolve, reject) {
+      const WebP = new Image();
+      WebP.onload = WebP.onerror = function () {
+        if (WebP.height === 2) {
+          resolve(true);
+        } else {
+          reject(false);
+        }
+      };
+      WebP.src = 'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
+    });
+  }
+  
   render () {
-    this.options.selector = document.querySelectorAll(this.options.className);
+    this.options.selector = document.querySelectorAll('.' + this.options.className);
     this.options.selector.forEach((item) => {
-      this.load(item);
+      this.io.observe(item);
     })
   }
   
@@ -78,16 +104,15 @@ export default class LazyLoad {
       return;
     }
     
-    if (!this.isVisible(el)) {
-      return;
-    }
-    
     if (eleType === 'img' || eleType === 'video') {
       type = 'src';
     }
     options.before.call(this, el);
     if (type === 'src' || type === 'background') {
       let img = new Image();
+      if (options.webp) {
+      
+      }
       img.src = dataSrc;
       img.addEventListener('load', () => {
         if (type === 'src') {
@@ -95,6 +120,8 @@ export default class LazyLoad {
         } else {
           el.style.backgroundImage = dataSrc;
         }
+        // el.classList.remove('lazy');
+        this.io.unobserve(el);
         return options.success.call(this, el);
       }, false);
   

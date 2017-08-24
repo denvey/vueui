@@ -9,7 +9,7 @@
       <div slot="right" @click="test">right</div>
     </NavBar>
     <div class="page-content">
-      <ul>
+      <ul class="lazy-load">
         <li ><img class="lazy" src="" data-src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1724337809,3334736965&fm=26&gp=0.jpg" alt=""></li>
         <li ><img class="lazy" src="" data-src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=662156188,367416869&fm=26&gp=0.jpg" alt=""></li>
         <li ><img class="lazy" src="" data-src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=499210839,609795368&fm=26&gp=0.jpg" alt=""></li>
@@ -43,9 +43,14 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
 .page-content {
   overflow: auto;
 }
+  .lazy-load {
+    li {
+      height: 300px;
+    }
+  }
 </style>
 
