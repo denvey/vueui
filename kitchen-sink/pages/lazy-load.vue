@@ -30,6 +30,7 @@ export default {
   },
   mounted: function () {
     let lazyLoad = new LazyLoad({
+      threshold: '100px',
       before: (el) => {
         console.log(el);
       }
@@ -44,6 +45,9 @@ export default {
 </script>
 
 <style lang="less">
+  .pages,.page,.page-content {
+    height: 100%;
+  }
 .page-content {
   overflow: auto;
 }

@@ -11,8 +11,10 @@ export default class LazyLoad {
   constructor(options = {}) {
     this.options = {
       loading: '',
-      container: options.container || window,
-      threshold: options.threshold || 0,
+      container: options.container || null,
+      direction: options.direction || 'vertical',
+      threshold: options.threshold || '0px',
+      timeout: options.timeout || 0,
       type: options.type,
       className: options.className || 'lazy',
       attr: options.attr || '',
@@ -30,8 +32,15 @@ export default class LazyLoad {
     
       }
     };
+    let rootMargin;
+    if (this.options.direction == 'vertical') {
+      rootMargin = `${this.options.threshold} 0px`;
+    } else {
+      rootMargin = `0px ${this.options.threshold}`;
+    }
   
-    this.on();
+    console.log(rootMargin);
+    this.on(rootMargin);
   }
   
   isVisible (el) {
@@ -50,7 +59,7 @@ export default class LazyLoad {
     return visible;
   }
   
-  on () {
+  on (rootMargin) {
     this.io = new IntersectionObserver((selector) => {
       selector.forEach((item) => {
         console.log(item);
@@ -59,11 +68,12 @@ export default class LazyLoad {
           this.load(item.target);
         }
       })
+    }, {
+      rootMargin,
+      root: this.options.container,
+      threshold: [ 0, Number.MIN_VALUE, 0.01]
     });
     this.render();
-    this.options.event.forEach((eventType) => {
-      this.options.container.addEventListener(eventType, this.render.bind(this), false);
-    });
   }
   
   off () {
