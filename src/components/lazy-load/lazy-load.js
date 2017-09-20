@@ -10,27 +10,20 @@ export default class LazyLoad {
    */
   constructor(options = {}) {
     this.options = {
-      loading: '',
+      loading: '' || 'http://temp.im/300x300/4CD964/fff',
       container: options.container || null,
       direction: options.direction || 'vertical',
       threshold: options.threshold || '0px',
       timeout: options.timeout || 0,
       type: options.type,
       className: options.className || 'lazy',
-      attr: options.attr || '',
-      webp: options.webp || '',
+      attr: options.attr || 'data-src',
+      isWebp: options.isWebp || '',
       status: ['loading', 'loaded', 'error'],
-      event: ['scroll', 'resize'],
       selector: options.selector || [],
-      before (el) { // 图片加载之前，执行钩子函数
-    
-      },
-      success (el) { // 图片加载成功，执行钩子函数
-    
-      },
-      error (el) { // 图片加载失败，执行的钩子函数
-    
-      }
+      before: options.before || function() {}, // 图片加载之前，执行钩子函数
+      success: options.success || function() {}, // 图片加载成功，执行钩子函数
+      error: options.error || function() {}, // 图片加载失败，执行的钩子函数
     };
     let rootMargin;
     if (this.options.direction == 'vertical') {
@@ -38,8 +31,13 @@ export default class LazyLoad {
     } else {
       rootMargin = `0px ${this.options.threshold}`;
     }
-  
-    console.log(rootMargin);
+    
+    if (this.options.isWebp === '') {
+      this.webp().then((res) => {
+        this.options.isWebp = res;
+      });
+    }
+    
     this.on(rootMargin);
   }
   
@@ -62,7 +60,6 @@ export default class LazyLoad {
   on (rootMargin) {
     this.io = new IntersectionObserver((selector) => {
       selector.forEach((item) => {
-        console.log(item);
         const intersectionRatio = item.intersectionRatio;
         if(intersectionRatio > 0 && intersectionRatio <= 1) {
           this.load(item.target);
@@ -81,7 +78,9 @@ export default class LazyLoad {
   }
   
   refresh () {
-  
+    document.querySelectorAll('.' + this.options.className).forEach((item) => {
+      item.setAttribute('data-load-status', '');
+    });
   }
   
   webp () {
@@ -101,45 +100,74 @@ export default class LazyLoad {
   render () {
     this.options.selector = document.querySelectorAll('.' + this.options.className);
     this.options.selector.forEach((item) => {
-      this.io.observe(item);
+      if (item.dataset.loadStatus !== this.options.status[1]) {
+        this.io.observe(item);
+        const type = this.getType(item);
+        if (type === 'src') {
+          if (!item.src) {
+            item.setAttribute('src', this.options.loading);
+          }
+        } else if (type === 'background') {
+          if (!item.style.backgroundImage) {
+            item.style.backgroundImage = `url(${this.options.loading})`;
+          }
+        }
+      }
     })
   }
   
-  load (el) {
+  /**
+   * 获取 dom 类型
+   * @param el
+   * @returns {string}
+   */
+  getType(el) {
     let { options } = this;
     let eleType = el.nodeName.toLowerCase(),
-      dataSrc = el.getAttribute('data-src'),
       type = options.type || 'background';
-    if (!dataSrc) {
-      return;
-    }
-    
     if (eleType === 'img' || eleType === 'video') {
       type = 'src';
     }
-    options.before.call(this, el);
+    return type;
+  };
+  
+  load (el) {
+    const { options } = this;
+    const type = this.getType(el);
+    el.dataset.loadStatus = options.status[0];
+    
     if (type === 'src' || type === 'background') {
-      let img = new Image();
-      if (options.webp) {
       
+      let dataSrc = el.getAttribute(options.attr);
+      if (!dataSrc) {
+        return;
       }
+  
+      const retDataSrc = options.before.call(this, {el, dataSrc, isWebp: options.isWebp});
+      if (retDataSrc) {
+        dataSrc = retDataSrc;
+      }
+      let img = new Image();
       img.src = dataSrc;
       img.addEventListener('load', () => {
         if (type === 'src') {
           el.setAttribute('src', dataSrc);
         } else {
-          el.style.backgroundImage = dataSrc;
+          el.style.backgroundImage = `url(${dataSrc})`;
         }
         // el.classList.remove('lazy');
+        el.dataset.loadStatus = options.status[1];
         this.io.unobserve(el);
         return options.success.call(this, el);
       }, false);
   
       img.addEventListener('error', () => {
+        el.dataset.loadStatus = options.status[2];
         options.error.call(this, el);
       }, false)
     } else if (type === 'component') {
-    
+      options.before.call(this, el);
+      options.success.call(this, el);
     }
   }
 }
