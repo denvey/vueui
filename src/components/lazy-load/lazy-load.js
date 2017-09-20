@@ -155,7 +155,6 @@ export default class LazyLoad {
         } else {
           el.style.backgroundImage = `url(${dataSrc})`;
         }
-        // el.classList.remove('lazy');
         el.dataset.loadStatus = options.status[1];
         this.io.unobserve(el);
         return options.success.call(this, el);
