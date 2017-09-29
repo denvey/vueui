@@ -17,6 +17,9 @@
         <li ><img class="lazy" data-src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2310884729,3185776489&fm=26&gp=0.jpg" alt=""></li>
         <li class="lazy" data-src="http://lzxb.name/lazy-load-img/examples/images/6.jpg"></li>
       </ul>
+      <LazyLoad>
+        hello
+      </LazyLoad>
     </div>
   </div>
 </template>
@@ -24,17 +27,27 @@
 <script>
 import NavBar from '@/components/nav-bar';
 import LazyLoad from '@/components/lazy-load'
+import Vue from 'vue';
+Vue.use(LazyLoad);
 export default {
   components: {
     NavBar
   },
   mounted: function () {
-    let lazyLoad = new LazyLoad({
+    /*let lazyLoad = new LazyLoad({
       threshold: '100px',
       before: (el) => {
         console.log(el);
+        console.log(el);
       }
     });
+
+    new LazyLoad({
+      className: "lazy1",
+      type: "component",
+      before: (el) => {
+      }
+    })*/
   },
   methods: {
     test: function () {
@@ -50,6 +63,9 @@ export default {
   }
 .page-content {
   overflow: auto;
+}
+.lazy1 {
+  height: 100px;
 }
   .lazy-load {
     li {
