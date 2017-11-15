@@ -15,11 +15,8 @@
         <li ><img class="lazy" data-src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=499210839,609795368&fm=26&gp=0.jpg" alt=""></li>
         <li ><img class="lazy" data-src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1072993694,4090632546&fm=26&gp=0.jpg" alt=""></li>
         <li ><img class="lazy" data-src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2310884729,3185776489&fm=26&gp=0.jpg" alt=""></li>
-        <li class="lazy" data-src="http://lzxb.name/lazy-load-img/examples/images/6.jpg"></li>
+        <li class="lazy" data-src="http://lzxb.name/lazy-load-img/examples/images/61.jpg"></li>
       </ul>
-      <LazyLoad>
-        hello
-      </LazyLoad>
     </div>
   </div>
 </template>
@@ -28,21 +25,20 @@
 import NavBar from '@/components/nav-bar';
 import LazyLoad from '@/components/lazy-load'
 import Vue from 'vue';
-Vue.use(LazyLoad);
+// Vue.use(LazyLoad);
 export default {
   components: {
     NavBar
   },
   mounted: function () {
-    /*let lazyLoad = new LazyLoad({
+    let lazyLoad = new LazyLoad({
       threshold: '100px',
       before: (el) => {
-        console.log(el);
-        console.log(el);
+        return el.dataSrc + '.webp';
       }
     });
 
-    new LazyLoad({
+    /*new LazyLoad({
       className: "lazy1",
       type: "component",
       before: (el) => {

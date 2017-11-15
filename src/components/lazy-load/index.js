@@ -14,4 +14,4 @@ if (typeof window !== 'undefined' && window.Vue) {
   window.Vue.use(vueLazyLoad)
 }*/
 
-export default vueLazyLoad;
+export default LazyLoad;

@@ -1,9 +1,9 @@
 {
-  "name": "vueui",
-  "version": "1.0.0",
+  "name": "vuix",
+  "version": "0.0.1",
   "description": "A Vue.js project",
   "author": "denvey <dengwei87>",
-  "private": true,
+  "main": "./vuix/src/index.js",
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
@@ -16,6 +16,7 @@
   "dependencies": {
     "intersection-observer": "^0.4.0",
     "vue": "^2.3.3",
+    "vue-markdown-loader": "^2.2.3",
     "vue-router": "^2.3.1"
   },
   "devDependencies": {

@@ -10,7 +10,7 @@ export default class LazyLoad {
    */
   constructor(options = {}) {
     this.options = {
-      loading: '' || 'http://temp.im/300x300/4CD964/fff',
+      loading:  options.loading || 'http://temp.im/300x300/4CD964/fff',
       container: options.container || null,
       direction: options.direction || 'vertical',
       threshold: options.threshold || '0px',
@@ -78,42 +78,48 @@ export default class LazyLoad {
   }
   
   refresh () {
-    document.querySelectorAll('.' + this.options.className).forEach((item) => {
+    [].forEach.call(document.querySelectorAll('.' + this.options.className), (item) => {
       item.setAttribute('data-load-status', '');
-    });
+    })
   }
   
   webp () {
     return new Promise(function(resolve, reject) {
-      const WebP = new Image();
-      WebP.onload = WebP.onerror = function () {
-        if (WebP.height === 2) {
-          resolve(true);
-        } else {
-          reject(false);
-        }
-      };
-      WebP.src = 'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
+      if (window.localStorage.getItem('isSupportWebp')) {
+        resolve(true);  
+      } else {
+        const WebP = new Image();
+        WebP.onload = WebP.onerror = function () {
+          if (WebP.height === 1) {
+            resolve(true);
+          } else {
+            reject(false);
+          }
+        };
+        WebP.src = '//p1.meituan.net/wedding/cb2f01298c96e6a067d18f5e78c0f400930.png.webp';
+      }
     });
   }
   
   render () {
     this.options.selector = document.querySelectorAll('.' + this.options.className);
-    this.options.selector.forEach((item) => {
-      if (item.dataset.loadStatus !== this.options.status[1]) {
-        this.io.observe(item);
-        const type = this.getType(item);
-        if (type === 'src') {
-          if (!item.src) {
-            item.setAttribute('src', this.options.loading);
-          }
-        } else if (type === 'background') {
-          if (!item.style.backgroundImage) {
-            item.style.backgroundImage = `url(${this.options.loading})`;
+    // this.options.selector.forEach((item) => {
+      [].forEach.call(this.options.selector, (item) => {
+        if (item.dataset.loadStatus !== this.options.status[1]) {
+          this.io.observe(item);
+          const type = this.getType(item);
+          if (type === 'src') {
+            if (!item.src) {
+              item.setAttribute('src', this.options.loading);
+            }
+          } else if (type === 'background') {
+            if (!item.style.backgroundImage) {
+              item.style.backgroundImage = `url(${this.options.loading})`;
+            }
           }
         }
-      }
-    })
+      })
+    // })
   }
   
   /**
@@ -130,6 +136,15 @@ export default class LazyLoad {
     }
     return type;
   };
+
+  loadImg(el, type, src) {
+    if (type === 'src') {
+      el.setAttribute('src', src);
+    } else {
+      el.style.backgroundImage = `url(${src})`;
+    }
+    this.io.unobserve(el);
+  }
   
   load (el) {
     const { options } = this;
@@ -142,7 +157,7 @@ export default class LazyLoad {
       if (!dataSrc) {
         return;
       }
-  
+      let tempSrc = dataSrc;
       const retDataSrc = options.before.call(this, {el, dataSrc, isWebp: options.isWebp});
       if (retDataSrc) {
         dataSrc = retDataSrc;
@@ -150,19 +165,27 @@ export default class LazyLoad {
       let img = new Image();
       img.src = dataSrc;
       img.addEventListener('load', () => {
-        if (type === 'src') {
-          el.setAttribute('src', dataSrc);
-        } else {
-          el.style.backgroundImage = `url(${dataSrc})`;
-        }
+        this.loadImg(el, type, dataSrc);
         el.dataset.loadStatus = options.status[1];
-        this.io.unobserve(el);
         return options.success.call(this, el);
       }, false);
   
       img.addEventListener('error', () => {
-        el.dataset.loadStatus = options.status[2];
-        options.error.call(this, el);
+        if (el.dataset.loadStatus !== 'firstError') {
+          let img = new Image();
+          img.src = tempSrc;
+          img.addEventListener('load', () => {
+            this.loadImg(el, type, tempSrc);
+            el.dataset.loadStatus = options.status[1];
+            return options.success.call(this, el);
+          }, false);
+          img.addEventListener('error', () => {
+            el.dataset.loadStatus = options.status[2];
+            options.error.call(this, el);
+            this.io.unobserve(el);
+          });
+          el.dataset.loadStatus = 'firstError'
+        }
       }, false)
     } else if (type === 'component') {
       options.before.call(this, el);

@@ -10,7 +10,7 @@
 
 <script>
   import Vue from 'vue';
-  import { Modals, Modal }  from '@/components/modal';
+  import { Modals, Modal } from '@/components/modal';
   import Button from '@/components/button';
   Vue.use(Modals);
   export default {
